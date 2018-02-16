@@ -1,0 +1,31 @@
+version: '2.1'
+services:
+  rabbit1:
+    image: dadhx05.interno:9090/rabbitmq:3.6-management-alpine
+    hostname: ${HOSTNAME}
+    mem_limit: 2g
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_LOGS=/var/log/rabbitmq/rabbit.log
+      - RABBITMQ_NODENAME=rabbit1
+      - RABBITMQ_NODE_PORT=5672
+      - RABBITMQ_VM_MEMORY_HIGH_WATERMARK=0.4
+    volumes:
+      - ${RABBITMQ_DATA_DIR}/rabbit1:/var/lib/rabbitmq
+      - ${RABBITMQ_LOGS_DIR}/rabbit1:/var/log/rabbitmq
+    network_mode: "host"
+  rabbit2:
+    image: dadhx05.interno:9090/rabbitmq:3.6-management-alpine
+    hostname: ${HOSTNAME}
+    mem_limit: 2g
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_LOGS=/var/log/rabbitmq/rabbit.log
+      - RABBITMQ_NODENAME=rabbit2
+      - RABBITMQ_NODE_PORT=5673
+      - RABBITMQ_SERVER_START_ARGS=-rabbitmq_management listener [{port,15673}]
+      - RABBITMQ_VM_MEMORY_HIGH_WATERMARK=0.4
+    volumes:
+      - ${RABBITMQ_DATA_DIR}/rabbit2:/var/lib/rabbitmq
+      - ${RABBITMQ_LOGS_DIR}/rabbit2:/var/log/rabbitmq
+    network_mode: "host"
